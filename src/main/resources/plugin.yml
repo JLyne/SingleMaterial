@@ -1,0 +1,7 @@
+name: SingleMaterial
+version: 1.0
+author: Jim
+description: Restricts players to bulding with a single material
+
+main: uk.co.notnull.SingleMaterial.SingleMaterial
+api-version: "1.15"

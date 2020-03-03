@@ -1,0 +1,85 @@
+package uk.co.notnull.SingleMaterial;
+
+import org.bukkit.Material;
+import org.bukkit.configuration.Configuration;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Random;
+
+public class MaterialManager {
+	ArrayList<Material> availableMaterials;
+	HashMap<Player, Material> assignedMaterials;
+
+	public MaterialManager(Configuration config) {
+		availableMaterials = new ArrayList<>();
+		assignedMaterials = new HashMap<>();
+
+		for(Material material : Material.values()) {
+			if(material.isLegacy() || material.isAir()) {
+				continue;
+			}
+
+			if(!material.isBlock() || !material.isItem()) { //TODO: Whitelist
+				continue;
+			}
+
+			//TODO: Blacklist
+			availableMaterials.add(material);
+		}
+	}
+
+	public void fillInventory(Player player) {
+		Material assigned = assignedMaterials.get(player);
+
+		if(assigned != null) {
+			player.getInventory().clear();
+			player.getInventory().addItem(new ItemStack(assigned, 2240));
+			player.getEquipment().setHelmet(new ItemStack(assigned, 1));
+		}
+	}
+
+	public Material assignMaterial(Player player) {
+		if(availableMaterials.isEmpty()) {
+			return null;
+		}
+
+		Material assigned = availableMaterials.get(new Random().nextInt(availableMaterials.size()));
+
+		availableMaterials.remove(assigned);
+		assignedMaterials.put(player, assigned);
+
+		fillInventory(player);
+
+		return assigned;
+	}
+
+	public Material rerollMaterial(Player player) {
+		if(availableMaterials.isEmpty()) {
+			return null;
+		}
+
+		Material oldMaterial = assignedMaterials.get(player);
+		assignedMaterials.remove(player);
+		Material newMaterial = assignMaterial(player);
+
+		availableMaterials.add(oldMaterial);
+
+		return newMaterial;
+	}
+
+	public void removePlayer(Player player) {
+		Material assigned = assignedMaterials.get(player);
+
+		if(assigned != null) {
+			assignedMaterials.remove(player);
+			availableMaterials.add(assigned);
+		}
+	}
+
+	public boolean isAssignedMaterial(Player player, Material material) {
+		return player.hasPermission("singlematerial.bypass") || assignedMaterials.get(player).equals(material);
+	}
+}
