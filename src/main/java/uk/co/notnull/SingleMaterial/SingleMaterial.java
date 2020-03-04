@@ -1,6 +1,9 @@
 package uk.co.notnull.SingleMaterial;
 
+import co.aikar.commands.MessageType;
 import co.aikar.commands.PaperCommandManager;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
@@ -20,13 +23,18 @@ import java.util.Objects;
 public class SingleMaterial extends JavaPlugin implements Listener {
 	private PaperCommandManager commandManager;
 	private MaterialManager materialManager;
+	private static SingleMaterial instance;
+
+	public SingleMaterial() {
+	    instance = this;
+    }
 
     @Override
     public void onEnable() {
 		initConfig();
 		createFile("languages/en-US.yml");
 
-		materialManager = new MaterialManager(getConfig());
+		materialManager = new MaterialManager(this, getConfig().getStringList("blacklist"));
 
 		getServer().getPluginManager().registerEvents(new Inventories(this), this);
 		getServer().getPluginManager().registerEvents(new JoinLeave(this), this);
@@ -52,6 +60,10 @@ public class SingleMaterial extends JavaPlugin implements Listener {
     	getConfig();
         saveDefaultConfig();
 	}
+
+	public static SingleMaterial getInstance() {
+        return instance;
+    }
 
     public PaperCommandManager getCommandManager() {
         return commandManager;

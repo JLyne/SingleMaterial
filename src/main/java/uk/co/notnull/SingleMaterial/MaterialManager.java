@@ -2,20 +2,34 @@ package uk.co.notnull.SingleMaterial;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.Configuration;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 
 public class MaterialManager {
+	private final SingleMaterial plugin;
 	ArrayList<Material> availableMaterials;
 	HashMap<Player, Material> assignedMaterials;
 
-	public MaterialManager(Configuration config) {
+	public MaterialManager(SingleMaterial singleMaterial, List<String> blacklist) {
+		plugin = singleMaterial;
 		availableMaterials = new ArrayList<>();
 		assignedMaterials = new HashMap<>();
+		ArrayList<Material> blacklistedMaterials = new ArrayList<>();
+
+		blacklist.forEach(materialName -> {
+			try {
+				Material material = Material.valueOf(materialName);
+				blacklistedMaterials.add(material);
+			} catch (IllegalArgumentException e) {
+				return;
+			}
+		});
 
 		for(Material material : Material.values()) {
 			if(material.isLegacy() || material.isAir()) {
@@ -26,7 +40,11 @@ public class MaterialManager {
 				continue;
 			}
 
-			//TODO: Blacklist
+			if(blacklistedMaterials.contains(material)) {
+				continue;
+			}
+
+			plugin.getLogger().info(material.name());
 			availableMaterials.add(material);
 		}
 	}
@@ -36,13 +54,17 @@ public class MaterialManager {
 
 		if(assigned != null) {
 			player.getInventory().clear();
-			player.getInventory().addItem(new ItemStack(assigned, 2240));
+			player.getInventory().addItem(new ItemStack(assigned, 35 * assigned.getMaxStackSize()));
 			player.getEquipment().setHelmet(new ItemStack(assigned, 1));
 		}
 	}
 
 	public Material assignMaterial(Player player) {
 		if(availableMaterials.isEmpty()) {
+			return null;
+		}
+
+		if(player.hasPermission("singlematerial.bypass")) {
 			return null;
 		}
 
