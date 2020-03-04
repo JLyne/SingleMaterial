@@ -1,5 +1,6 @@
 package uk.co.notnull.SingleMaterial.Listeners;
 
+import co.aikar.commands.MessageType;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -7,6 +8,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import uk.co.notnull.SingleMaterial.Messages;
 import uk.co.notnull.SingleMaterial.SingleMaterial;
 
 public class JoinLeave implements Listener {
@@ -23,9 +25,10 @@ public class JoinLeave implements Listener {
         Material assigned = plugin.getMaterialManager().assignMaterial(player);
 
         if(assigned == null) {
-            player.kickPlayer("No more material types are available.");
+            plugin.getCommandManager().formatMessage(
+                    plugin.getCommandManager().getCommandIssuer(player), MessageType.ERROR, Messages.MATERIAL__NONE_AVAILABLE);
         } else {
-            player.sendMessage("You have been assigned " + assigned.toString());
+            plugin.getCommandManager().getCommandIssuer(player).sendInfo(Messages.MATERIAL__ASSIGNED, "%material%", assigned.name());
         }
     }
 

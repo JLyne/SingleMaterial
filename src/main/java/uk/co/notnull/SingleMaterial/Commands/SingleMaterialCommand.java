@@ -2,8 +2,10 @@ package uk.co.notnull.SingleMaterial.Commands;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import uk.co.notnull.SingleMaterial.Messages;
 import uk.co.notnull.SingleMaterial.SingleMaterial;
 
 import java.util.UUID;
@@ -17,10 +19,11 @@ public class SingleMaterialCommand extends BaseCommand {
     @Description("Reroll your randomly assigned block type")
     public void onReroll(CommandSender sender) {
         if(sender.hasPermission("singlematerial.bypass")) {
-            //getCurrentCommandIssuer().send Error here
+            getCurrentCommandIssuer().sendError(Messages.MATERIAL__BYPASSED);
             return;
         }
 
-        plugin.getMaterialManager().rerollMaterial((Player) sender);
+        Material assigned = plugin.getMaterialManager().rerollMaterial((Player) sender);
+        getCurrentCommandIssuer().sendInfo(Messages.MATERIAL__REROLLED, "%material%", assigned.name());
     }
 }

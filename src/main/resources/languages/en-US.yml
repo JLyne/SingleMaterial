@@ -1,1 +1,11 @@
-
+material:
+  assigned: |-
+    You have been assigned: <c2>%material%</c2>
+    This is the only material you may place during this build stream.
+  rerolled: |-
+    Your material has been rerolled.
+    You have now been assigned <c2>%material%</c2>.
+  bypassed: |-
+    The plugin is disabled for you.
+  none-available: |-
+    No more material types are available.
