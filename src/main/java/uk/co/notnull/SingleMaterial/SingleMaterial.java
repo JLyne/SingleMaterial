@@ -41,11 +41,27 @@ public class SingleMaterial extends JavaPlugin implements Listener {
 		getServer().getPluginManager().registerEvents(new Blocks(this), this);
 
         registerCommands();
+
+        Bukkit.getOnlinePlayers().forEach(player -> {
+            if(player.hasPermission("singlematerial.bypass")) {
+                return;
+            }
+
+            Material assigned = materialManager.assignMaterial(player);
+
+            if(assigned == null) {
+                commandManager.formatMessage(
+                        commandManager.getCommandIssuer(player), MessageType.ERROR, Messages.MATERIAL__NONE_AVAILABLE);
+            } else {
+                commandManager.getCommandIssuer(player).sendInfo(Messages.MATERIAL__ASSIGNED, "%material%", assigned.name());
+            }
+        });
     }
 
     @Override
     public void onDisable() {
-        HandlerList.unregisterAll((JavaPlugin) this);
+        Bukkit.getOnlinePlayers().forEach(player -> player.getInventory().clear());
+	    HandlerList.unregisterAll((JavaPlugin) this);
     }
 
     private void registerCommands() {
