@@ -9,3 +9,5 @@ material:
     The plugin is disabled for you.
   none-available: |-
     No more material types are available.
+  cooldown: |-
+    You must wait <c2>%seconds</c2> seconds before rerolling again.

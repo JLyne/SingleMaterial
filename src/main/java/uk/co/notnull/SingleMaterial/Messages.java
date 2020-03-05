@@ -7,7 +7,9 @@ public enum Messages implements MessageKeyProvider {
     MATERIAL__ASSIGNED,
 	MATERIAL__REROLLED,
 	MATERIAL__BYPASSED,
-	MATERIAL__NONE_AVAILABLE;;
+	MATERIAL__NONE_AVAILABLE,
+	MATERIAL__COOLDOWN;
+	;
 
 
     /**
