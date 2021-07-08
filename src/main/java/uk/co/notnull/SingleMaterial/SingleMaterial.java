@@ -36,7 +36,7 @@ public class SingleMaterial extends JavaPlugin implements Listener {
 
 		materialManager = new MaterialManager(this, getConfig().getStringList("blacklist"));
 
-		getServer().getPluginManager().registerEvents(new Inventories(this), this);
+		getServer().getPluginManager().registerEvents(new Inventories(), this);
 		getServer().getPluginManager().registerEvents(new JoinLeave(this), this);
 		getServer().getPluginManager().registerEvents(new Blocks(this), this);
 

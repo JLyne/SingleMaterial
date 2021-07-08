@@ -12,7 +12,7 @@ import uk.co.notnull.SingleMaterial.Messages;
 import uk.co.notnull.SingleMaterial.SingleMaterial;
 
 public class JoinLeave implements Listener {
-    private SingleMaterial plugin;
+    private final SingleMaterial plugin;
 
     public JoinLeave(SingleMaterial plugin) {
         this.plugin = plugin;

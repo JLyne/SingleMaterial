@@ -1,8 +1,6 @@
 package uk.co.notnull.SingleMaterial;
 
 import org.bukkit.Material;
-import org.bukkit.configuration.Configuration;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -12,12 +10,10 @@ import java.util.List;
 import java.util.Random;
 
 public class MaterialManager {
-	private final SingleMaterial plugin;
 	ArrayList<Material> availableMaterials;
 	HashMap<Player, Material> assignedMaterials;
 
 	public MaterialManager(SingleMaterial singleMaterial, List<String> blacklist) {
-		plugin = singleMaterial;
 		availableMaterials = new ArrayList<>();
 		assignedMaterials = new HashMap<>();
 		ArrayList<Material> blacklistedMaterials = new ArrayList<>();
@@ -26,8 +22,7 @@ public class MaterialManager {
 			try {
 				Material material = Material.valueOf(materialName);
 				blacklistedMaterials.add(material);
-			} catch (IllegalArgumentException e) {
-				return;
+			} catch (IllegalArgumentException ignored) {
 			}
 		});
 
@@ -44,7 +39,7 @@ public class MaterialManager {
 				continue;
 			}
 
-			plugin.getLogger().info(material.name());
+			singleMaterial.getLogger().info(material.name());
 			availableMaterials.add(material);
 		}
 	}

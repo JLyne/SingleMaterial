@@ -1,52 +1,55 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
 plugins {
-    id 'com.github.johnrengelman.shadow' version '4.0.4'
+    id 'com.github.johnrengelman.shadow' version '7.0.0'
     id 'java'
-    id 'maven'
 }
 
-group 'uk.co.notnull.SingleMaterial'
-version '1.0-SNAPSHOT'
-
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
 repositories {
+    mavenLocal()
     mavenCentral()
-    maven {
-        url "https://papermc.io/repo/repository/maven-public/"
-    }
-    maven {
-        url "https://oss.sonatype.org/content/repositories/snapshots"
-    }
-    maven {
-        url "https://maven.enginehub.org/repo/"
-    }
+
     maven {
         url "https://repo.aikar.co/content/groups/aikar/"
-    }
-    maven {
-        url "https://hub.spigotmc.org/nexus/content/groups/public/"
     }
 }
 
 dependencies {
-    compileOnly "com.destroystokyo.paper:paper-api:1.14.4-R0.1-SNAPSHOT"
-    compile "co.aikar:acf-paper:0.5.0-SNAPSHOT"
+    implementation "co.aikar:acf-paper:0.5.0-SNAPSHOT"
+    compileOnly "com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT"
 }
 
-sourceSets {
-    main {
-        java {
-            srcDirs= ["./src/main/java"]
-        }
-        resources {
-            srcDirs= ["./src/main/resources"]
+group 'uk.co.notnull'
+version '1.0-SNAPSHOT'
+
+java.sourceCompatibility = JavaVersion.VERSION_16
+java.targetCompatibility = JavaVersion.VERSION_16
+
+tasks {
+    processResources {
+        from("${project.rootDir}/src/main/resources") {
+            duplicatesStrategy = DuplicatesStrategy.INCLUDE
+            project.properties.findAll().each {
+                prop ->
+                    if (prop.value != null && prop.value instanceof java.lang.String) {
+                        filter(ReplaceTokens, tokens: [(prop.key): prop.value])
+                        filter(ReplaceTokens, tokens: [('project.' + prop.key): prop.value])
+                    }
+            }
         }
     }
-}
 
-shadowJar {
-   relocate 'co.aikar.commands', 'uk.co.notnull.SingleMaterial.acf'
-}
+    compileJava {
+        options.compilerArgs += ["-Xlint:all", "-Xlint:-processing"]
+        options.encoding = 'UTF-8'
+    }
 
-build.dependsOn shadowJar
+    shadowJar {
+        archiveClassifier.set('')
+        relocate 'co.aikar.commands', 'uk.co.notnull.SingleMaterial.shaded.acf'
+    }
+
+    build {
+        dependsOn(shadowJar)
+    }
+}

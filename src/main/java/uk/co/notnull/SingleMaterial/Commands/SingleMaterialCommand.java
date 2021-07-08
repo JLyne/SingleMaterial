@@ -11,14 +11,13 @@ import uk.co.notnull.SingleMaterial.SingleMaterial;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.HashMap;
-import java.util.UUID;
 
 @CommandAlias("singlematerial|sm|smaterial")
 public class SingleMaterialCommand extends BaseCommand {
     @Dependency
     private SingleMaterial plugin;
 
-    private HashMap<Player, Instant> lastReroll;
+    private final HashMap<Player, Instant> lastReroll;
 
     public SingleMaterialCommand() {
         lastReroll = new HashMap<>();
