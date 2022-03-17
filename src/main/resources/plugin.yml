@@ -4,4 +4,4 @@ author: Jim (NotKatuen)
 description: Restricts players to bulding with a single material
 
 main: uk.co.notnull.SingleMaterial.SingleMaterial
-api-version: 1.16
+api-version: 1.17
